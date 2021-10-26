@@ -24,7 +24,12 @@ export class MensajeService {
 
             sala.mensajes.push(mensaje);
 
-            return await this.salaModel.findByIdAndUpdate(idSala, sala);          
+            return await this.salaModel.findByIdAndUpdate(idSala, sala, function (err, result) {
+
+                if (err) return err;
+
+                return result;
+            });          
             
         } catch (error) {
             throw new NotFoundException(error);
