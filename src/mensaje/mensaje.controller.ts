@@ -1,6 +1,6 @@
-import { Body, Controller, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { MensajeService } from './mensaje.service';
-import { Mensaje } from './model/Mensaje.dto';
+import { MensajeDto } from './model/Mensaje.dto';
 
 @Controller('mensaje')
 export class MensajeController {
@@ -9,8 +9,13 @@ export class MensajeController {
 
     }
 
-    @Post('/:idSala')
-    insertMensaje(@Param('idSala') idSala: string, @Body() mensaje: Mensaje) {
-        return this.mensajeService.insertMensaje(idSala, mensaje);
+    @Post('/')
+    insertMensaje(@Body() mensaje: MensajeDto) {
+        return this.mensajeService.insertMensaje(mensaje);
+    }
+
+    @Get('/:idSala')
+    getMensajeSala(@Param('idSala') idSala: string) {
+        return this.mensajeService.getMensajeSala(idSala);
     }
 }

@@ -1,9 +1,9 @@
 import { HttpException, HttpStatus, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Mensaje } from 'src/mensaje/model/Mensaje.dto';
 import { Usuario, UsuarioDocument } from 'src/usuario/schema/Usuario.schema';
 import { Sala, SalaDocument } from './schema/Sala.schema';
+import { SalaDto } from './model/Sala.dto';
 
 @Injectable()
 export class SalaService {
@@ -25,10 +25,15 @@ export class SalaService {
 
             } else {
 
-                const req = await this.salaModel.find({ idUsuarioReqResp: usuario }).exec();
-                const resp = await this.salaModel.find({ idUsuarioRespReq: usuario }).exec();
+                const req = await this.salaModel.find({ usuarioEmisor : usuario })
+                                    .populate('usuarioEmisor').populate('usuarioReceptor').exec();
+                const resp = await this.salaModel.find({ usuarioReceptor: usuario })
+                                    .populate('usuarioEmisor').populate('usuarioReceptor').exec();
+                const result = req.concat(resp);
 
-                return req.concat(resp);
+
+
+                return result;
             }
 
         } catch (error) {
@@ -36,34 +41,32 @@ export class SalaService {
         }
     }
 
-    async createSala(reqResp: string, respReq: string): Promise<Sala> {
+    async createSala(sala: SalaDto): Promise<Sala> {
 
         try {
             
-            const usuarioReq = await this.usuarioModel.findOne({ nickName: reqResp }).exec();
-            const usuarioResp = await this.usuarioModel.findOne({ nickName: respReq }).exec();
+            const usuarioReq = await this.usuarioModel.findOne({ nickName: sala.usuarioEmisor }).exec();
+            const usuarioResp = await this.usuarioModel.findOne({ nickName: sala.usuarioReceptor }).exec();
             
             if (!usuarioReq || !usuarioResp) {
                 throw new HttpException('Alguno de los usuarios no existen', HttpStatus.NOT_ACCEPTABLE);
             } else {
 
-                const req = await this.salaModel.findOne({ idUsuarioReqResp: usuarioReq, idUsuarioRespReq: usuarioResp }).exec();
-                const resp = await this.salaModel.findOne({ idUsuarioReqResp: usuarioResp, idUsuarioRespReq: usuarioReq }).exec();
+                const req = await this.salaModel.findOne({ usuarioEmisor: usuarioReq, usuarioReceptor: usuarioResp })
+                            .populate('usuarioEmisor').populate('usuarioReceptor').exec();
+                const resp = await this.salaModel.findOne({ usuarioEmisor: usuarioResp, usuarioReceptor: usuarioReq })
+                            .populate('usuarioEmisor').populate('usuarioReceptor').exec();
 
                 if (req || resp) {
-                    
-                    const result =  req ? req : resp;
-                    result.idUsuarioReqResp = await this.usuarioModel.findById(result.idUsuarioReqResp).exec();
-                    result.idUsuarioRespReq = await this.usuarioModel.findById(result.idUsuarioRespReq).exec();
 
-                    return result;
+                    return req ? req : resp;
 
                 } else {
 
                     const sala = new Sala();
-                    sala.idUsuarioReqResp = usuarioReq;
-                    sala.idUsuarioRespReq = usuarioResp;
-                    sala.mensajes = new Array<Mensaje>();
+                    sala.usuarioEmisor = usuarioReq;
+                    sala.usuarioReceptor = usuarioResp;
+                    sala.ultimoMsg = '';
                     return await this.salaModel.create(sala);
                 }
             }

@@ -31,7 +31,8 @@ export class UsuarioService {
             
             if (!existUsuario) {
 
-                const usuario = new this.usuarioModel(usuarioDto);
+                const usuario = new Usuario();
+                usuario.nickName = usuarioDto.nickName;
     
                 return await this.usuarioModel.create( usuario );
             } else

@@ -1,6 +1,7 @@
-import { Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
 import { SalaService } from './sala.service';
 import { Sala } from './schema/Sala.schema';
+import { SalaDto } from './model/Sala.dto';
 
 @Controller('sala')
 export class SalaController {
@@ -14,9 +15,9 @@ export class SalaController {
         return this.salaService.getFindSalas(usuario);
     }
 
-    @Post('/:reqResp/:respReq')
-    createSala(@Param('reqResp') reqResp: string, @Param('respReq') respReq: string) {
-        return this.salaService.createSala(reqResp, respReq);
+    @Post('/')
+    createSala(@Body() sala: SalaDto) {
+        return this.salaService.createSala(sala);
     }
 
     @Delete('/:idSala')

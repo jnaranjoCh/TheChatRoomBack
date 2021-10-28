@@ -1,7 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
 import { Usuario } from "src/usuario/schema/Usuario.schema";
 import * as mongoose from 'mongoose';
-import { Mensaje } from "src/mensaje/model/Mensaje.dto";
 
 export type SalaDocument = Sala & Document;
 
@@ -9,13 +8,13 @@ export type SalaDocument = Sala & Document;
 export class Sala {
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' })
-    idUsuarioReqResp: Usuario;
+    usuarioEmisor: Usuario;
 
     @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Usuario' })
-    idUsuarioRespReq: Usuario;
+    usuarioReceptor: Usuario;
 
-    @Prop({ required: true })
-    mensajes: Array<Mensaje>;
+    @Prop()
+    ultimoMsg: string;
 }
 
 export const SalaSchema = SchemaFactory.createForClass( Sala );

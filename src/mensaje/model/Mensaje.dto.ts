@@ -1,6 +1,8 @@
-export class Mensaje {
+export class MensajeDto {
 
     fecha: Date;
     texto: string;
-    reqOrResp: boolean;
+    idUserEmisor: string;
+    idUserReceptor: string;
+    idSala: string; 
 }
