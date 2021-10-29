@@ -61,6 +61,6 @@ export class MensajeService {
         if (!sala)
             throw new HttpException('La sala no existe', HttpStatus.NOT_ACCEPTABLE);
 
-        return await this.mensajeModel.find({ sala: sala }).exec();
+        return await this.mensajeModel.find({ sala: sala }).limit(50).exec();
     }
 }

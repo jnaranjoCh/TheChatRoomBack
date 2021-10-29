@@ -11,11 +11,13 @@ export class UsuarioService {
 
     }
 
-    async getUsuario( nickName: string): Promise<Usuario> {
+    async getUsuario( nickName: string) {
 
         try {
             
-            return await this.usuarioModel.findOne({ nickName: nickName }).exec();
+            const resp = await this.usuarioModel.findOne({ nickName: nickName }).exec();
+
+            return resp ? resp : {};
 
         } catch (error) {
          
