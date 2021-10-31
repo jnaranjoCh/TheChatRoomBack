@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 import { UsuarioModule } from './usuario/usuario.module';
 import { SalaModule } from './sala/sala.module';
 import { MensajeModule } from './mensaje/mensaje.module';
+import { ChatGateway } from './socket-io/chatRoom.gateway';
 
 @Module({
   imports: [
@@ -16,6 +17,6 @@ import { MensajeModule } from './mensaje/mensaje.module';
     MensajeModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, ChatGateway ],
 })
 export class AppModule {}
