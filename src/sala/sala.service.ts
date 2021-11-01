@@ -41,6 +41,20 @@ export class SalaService {
         }
     }
 
+    async getFindSalaById(idSala: string) {
+
+        if (idSala.length < 2)
+            throw new HttpException('El id de la sala es incorrecto', HttpStatus.NOT_ACCEPTABLE);
+
+        try {
+            
+            return await this.salaModel.findById(idSala).populate('usuarioEmisor').populate('usuarioReceptor');
+
+        } catch (error) {
+            throw new NotFoundException(error);
+        }
+    }
+
     async createSala(sala: SalaDto): Promise<Sala> {
 
         try {

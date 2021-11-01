@@ -15,8 +15,6 @@ export class ChatGateway {
     @SubscribeMessage('msgToServer')
     handleMessage(client: Socket, payload: any): void {
 
-        console.log(payload);
-
-        this.server.emit('msgToClient', payload);
+        this.server.emit('msg:'+payload.idUsuarioReceptor, payload);
     }
 }

@@ -15,6 +15,11 @@ export class SalaController {
         return this.salaService.getFindSalas(usuario);
     }
 
+    @Get('/findSala/:idSala')
+    findSala(@Param('idSala') idSala: string) {
+        return this.salaService.getFindSalaById(idSala);
+    }
+
     @Post('/')
     createSala(@Body() sala: SalaDto) {
         return this.salaService.createSala(sala);
